@@ -1,0 +1,79 @@
+{
+  "name": "pdf-dsa-converter",
+  "version": "1.0.0",
+  "description": "App desktop per conversione PDF in formato DSA-friendly",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:electron\" \"npm run dev:python\"",
+    "dev:electron": "wait-on http://localhost:5173 && electron .",
+    "dev:python": "cd backend && python -m uvicorn main:app --reload --port 8000",
+    "build": "npm run build:frontend && npm run build:python",
+    "build:frontend": "vite build",
+    "build:python": "cd backend && python -m PyInstaller --onefile --name pdf-processor main.py",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:linux": "npm run build && electron-builder --linux"
+  },
+  "keywords": [
+    "pdf",
+    "dsa",
+    "accessibility",
+    "ocr",
+    "desktop"
+  ],
+  "author": "Alessio Baronti",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "concurrently": "^8.2.0",
+    "electron": "^30.5.1",
+    "electron-builder": "^24.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0",
+    "wait-on": "^9.0.1"
+  },
+  "dependencies": {
+    "clsx": "^2.0.0",
+    "lucide-react": "^0.400.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "build": {
+    "appId": "com.alessiobaronti.pdf-dsa-converter",
+    "productName": "PDF DSA Converter",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "backend/dist/**/*",
+      "assets/**/*",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "binaries/",
+        "to": "binaries/",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icon.png"
+    }
+  }
+}

@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+backend/__pycache__/
+backend/src/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd
+backend/.Python
+backend/env/
+backend/venv/
+backend/.venv/
+
+# Build outputs
+dist/
+build/
+release/
+*.tgz
+*.tar.gz
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Binaries (will be downloaded by script)
+binaries/tesseract/*
+binaries/poppler/*
+!binaries/tesseract/.gitkeep
+!binaries/poppler/.gitkeep
+
+# Fonts (will be downloaded by script)
+assets/fonts/*
+!assets/fonts/.gitkeep
+
+# Python
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Electron
+out/
+app/

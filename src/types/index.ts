@@ -17,6 +17,7 @@ export interface ProcessingJob {
   id: string
   filePath: string
   fileName: string
+  file?: File
   status: 'pending' | 'processing' | 'completed' | 'error'
   progress: number
   error?: string

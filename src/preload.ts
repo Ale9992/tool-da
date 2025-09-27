@@ -9,7 +9,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
 declare global {
   interface Window {
     electronAPI: {
-      selectFiles: () => Promise<string[]>
+      selectFiles: () => Promise<
+        {
+          path: string
+          name: string
+          type: string
+          data: string
+        }[]
+      >
       selectOutputDirectory: () => Promise<string>
       platform: string
     }

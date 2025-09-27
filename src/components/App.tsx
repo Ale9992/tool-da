@@ -33,8 +33,9 @@ export default function App() {
   const handleFilesSelected = useCallback((files: File[]) => {
     const newJobs: ProcessingJob[] = files.map((file, index) => ({
       id: `job-${Date.now()}-${index}`,
-      filePath: file.path || file.name,
+      filePath: (file as File & { path?: string }).path || file.name,
       fileName: file.name,
+      file,
       status: 'pending',
       progress: 0
     }))
@@ -64,11 +65,12 @@ export default function App() {
         ))
 
         try {
-          // Crea un File object dal percorso (per ora simulato)
-          const file = new File([''], job.fileName, { type: 'application/pdf' })
-          
+          if (!job.file) {
+            throw new Error('File non disponibile per il job')
+          }
+
           // Avvia il processing
-          const result = await apiService.processPDF(file, options)
+          const result = await apiService.processPDF(job.file, options)
           
           // Polling per lo stato del job
           const pollJobStatus = async () => {

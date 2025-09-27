@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron'
-import { join } from 'path'
+import { join, basename } from 'path'
 import { spawn } from 'child_process'
+import { promises as fs } from 'fs'
 
 let mainWindow: BrowserWindow
 let pythonProcess: any
@@ -81,7 +82,25 @@ ipcMain.handle('select-files', async () => {
       { name: 'PDF Files', extensions: ['pdf'] }
     ]
   })
-  return result.filePaths
+
+  if (result.canceled || result.filePaths.length === 0) {
+    return []
+  }
+
+  const files = await Promise.all(
+    result.filePaths.map(async filePath => {
+      const data = await fs.readFile(filePath)
+
+      return {
+        path: filePath,
+        name: basename(filePath),
+        type: 'application/pdf',
+        data: data.toString('base64')
+      }
+    })
+  )
+
+  return files
 })
 
 ipcMain.handle('select-output-directory', async () => {

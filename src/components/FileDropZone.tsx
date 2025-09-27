@@ -33,12 +33,26 @@ export function FileDropZone({ onFilesSelected }: FileDropZoneProps) {
 
   const handleFileSelect = useCallback(async () => {
     try {
-      const filePaths = await window.electronAPI.selectFiles()
-      if (filePaths.length > 0) {
-        // Converti i percorsi in oggetti File
-        const files = filePaths.map(path => {
-          const fileName = path.split('/').pop() || path.split('\\').pop() || 'unknown.pdf'
-          return new File([], fileName, { type: 'application/pdf' })
+      const selectedFiles = await window.electronAPI.selectFiles()
+      if (selectedFiles.length > 0) {
+        const files = selectedFiles.map(fileData => {
+          const binaryString = atob(fileData.data)
+          const bytes = new Uint8Array(binaryString.length)
+
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i)
+          }
+
+          const file = new File([bytes], fileData.name, { type: fileData.type })
+
+          Object.defineProperty(file, 'path', {
+            value: fileData.path,
+            configurable: false,
+            enumerable: false,
+            writable: false
+          })
+
+          return file
         })
         onFilesSelected(files)
       }
